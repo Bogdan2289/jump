@@ -134,7 +134,7 @@ void AddNewVisitsToFile(ArrayList* list, const char* visit)
 ArrayList* Scan_config(const char* config)
 {
     FILE* config_f = fopen(config,"r");
-    ArrayList* result = Arraylist_init(10);
+    ArrayList* result = ArrayList_Init(10);
     Entry EntryNode;
     char buffer[256];
 
@@ -151,7 +151,7 @@ ArrayList* Scan_config(const char* config)
             }
             EntryNode.last_acces = 0;
             EntryNode.rank = 0;
-            Arraylist_push(result, EntryNode);
+            ArrayList_Push(result, EntryNode);
         }
     }
     fclose(config_f);

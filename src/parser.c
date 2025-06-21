@@ -35,14 +35,14 @@ static void FilterHistoryEntries(FILE* f, ArrayList* list, ArrayList* config_f, 
                 perror("strdup");
                 continue;
             }
-            Arraylist_push(list, result);
+            ArrayList_Push(list, result);
         }
     }
 }
 
 ArrayList* parse_history_file(const char* filename, const char* path, const char* config)
 {
-    ArrayList* list = Arraylist_init(20);
+    ArrayList* list = ArrayList_Init(20);
     FILE* f = fopen(filename, "r");
 
     if(!f)return NULL;
@@ -52,12 +52,12 @@ ArrayList* parse_history_file(const char* filename, const char* path, const char
         fclose(f);
         return NULL;
     }
-    parse_history_file_pass(f,list,config_f,path,1);
+    FilterHistoryEntries(f,list,config_f,path,1);
 
     if(list->length == 0)
     {
         rewind(f);
-        parse_history_file_pass(f,list,config_f,path,0);
+        FilterHistoryEntries(f,list,config_f,path,0);
     }
     fclose(f);
     qsort(list->entries, list->length, sizeof(Entry), Entry_Compare);

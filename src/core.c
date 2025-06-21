@@ -1,5 +1,10 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include "core.h"
 #include "utils.h"
+#include "scan.h"
+#include "parser.h"
 
 int Core_Run(int argc, char** argv)
 {
@@ -18,13 +23,13 @@ int Core_Run(int argc, char** argv)
     }
 
     char history[512];
-    snprintf(history, sizeof(history), "%s/Jump/build/.jump_history", home);
+    snprintf(history, sizeof(history), "%s/Desktop/Project/jump/config/.jump_history", home);
 
     char visit_path[512];
-    snprintf(visit_path, sizeof(visit_path), "%s/Jump/build/.jump_visit" ,home);
+    snprintf(visit_path, sizeof(visit_path), "%s/Desktop/Project/jump/config/.jump_visit" ,home);
 
     char config_visit[512];
-    snprintf(config_visit,sizeof(config_visit),"%s/.jump.conf",home);
+    snprintf(config_visit,sizeof(config_visit),"%s/Desktop/Project/jump/config.jump.conf",home);
     ArrayList* list;
     if (strcmp(arg, "--update") == 0) 
     {

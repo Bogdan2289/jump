@@ -32,7 +32,7 @@ int Get_terminal_width()
     return w.ws_col;
 }
 
-void Print_line()
+void Print_Line()
 {
     fprintf(stderr,"%s\n", GREEN);
     int width = Get_terminal_width();
@@ -58,6 +58,6 @@ void Print_out(ArrayList* list, const char* visit_path)
     Entry dir =  ArrayList_GetIndex(list, index);
     printf("%s\n", dir.path);
     Update_visit(dir.path, time(NULL),visit_path);
-    Add_visit(list, visit_path);
+    AddNewVisitsToFile(list, visit_path);
     ArrayList_Free(list);
 }

@@ -11,6 +11,7 @@ include_directories(include)
 # Добавляем исходные файлы
 set(SOURCES
     src/main.c
+    src/core.c
     src/scan.c
     src/parser.c
     src/list.c
