@@ -29,7 +29,7 @@ int Core_Run(int argc, char** argv)
     snprintf(visit_path, sizeof(visit_path), "%s/Desktop/Project/jump/config/.jump_visit" ,home);
 
     char config_visit[512];
-    snprintf(config_visit,sizeof(config_visit),"%s/Desktop/Project/jump/config.jump.conf",home);
+    snprintf(config_visit,sizeof(config_visit),"%s/Desktop/Project/jump/config/.jump.conf",home);
     ArrayList* list;
     if (strcmp(arg, "--update") == 0) 
     {

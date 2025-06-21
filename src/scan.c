@@ -134,20 +134,30 @@ void AddNewVisitsToFile(ArrayList* list, const char* visit)
 ArrayList* Scan_config(const char* config)
 {
     FILE* config_f = fopen(config,"r");
+    if(!config_f)
+    {
+        perror("config_f NULL");
+        return NULL;
+    }
     ArrayList* result = ArrayList_Init(10);
-    Entry EntryNode;
+    if(!result)
+    {
+        fclose(config_f);
+        return NULL;
+    }
     char buffer[256];
-
+    
     while (fgets(buffer, sizeof(buffer), config_f))
     {
         buffer[strcspn(buffer,"\n")] = '\0';
         if(buffer[0] != '[')
         {
-            EntryNode.path = strdup(buffer);
+            Entry EntryNode;
+            EntryNode.path = buffer;
             if(!EntryNode.path)
             {
                 perror("strdup filed");
-                continue;
+                // continue;
             }
             EntryNode.last_acces = 0;
             EntryNode.rank = 0;
