@@ -1,7 +1,7 @@
 #ifndef ENTRY_H
 #define ENTRY_H
 
-#include<time.h>
+#include <time.h>
 
 typedef struct
 {

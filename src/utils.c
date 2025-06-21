@@ -1,9 +1,9 @@
-#include<sys/ioctl.h>
-#include<stdio.h>
-#include<unistd.h>
-#include"parser.h"
-#include"utils.h"
-#include"scan.h"
+#include <sys/ioctl.h>
+#include <stdio.h>
+#include <unistd.h>
+#include "parser.h"
+#include "utils.h"
+#include "scan.h"
 
 
 int Entry_Compare(const void* a, const void* b)
@@ -20,7 +20,7 @@ int Entry_Compare(const void* a, const void* b)
     return 0; 
 }
 
-int Get_terminal_with()
+int Get_terminal_width()
 {
     struct winsize w;
      
@@ -35,25 +35,29 @@ int Get_terminal_with()
 void Print_line()
 {
     fprintf(stderr,"%s\n", GREEN);
-    int with = Get_terminal_with();
+    int width = Get_terminal_width();
     fputc('<', stderr);
-    for (size_t i = 0; i < with - 2; i++)
+    for (size_t i = 0; i < width - 2; i++)
     {
         fputc('-', stderr);
     }
        fputc('>', stderr);
        fputc('\n', stderr);
-       fprintf(stderr,"\033[0m\n");
+       fprintf(stderr,"%s", RESET);
 }
-void Print_out(ArrayList* list, const char visit_path[])
+void Print_out(ArrayList* list, const char* visit_path)
 {
 
-    Arraylist_printf(list);
+    ArrayList_Print(list);
     int index;
-    scanf("%d",&index);
-    Entry dir =  Arraylist_getIndex(list, index);
+    if(scanf("%d",&index) != 1 || index < 0 || (size_t)index >= list->length)
+    {
+        fprintf(stderr, "%sInvalid index%s\n", RED, RESET);
+        return;
+    }
+    Entry dir =  ArrayList_GetIndex(list, index);
     printf("%s\n", dir.path);
     Update_visit(dir.path, time(NULL),visit_path);
     Add_visit(list, visit_path);
-    Arraylist_free(list);
+    ArrayList_Free(list);
 }

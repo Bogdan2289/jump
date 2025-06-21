@@ -1,10 +1,11 @@
-#include<stdio.h>
-#include<string.h>
-#include<dirent.h>
-#include<time.h>
-#include"scan.h"
-#include"list.h"
-#include"utils.h"
+#include <stdio.h>
+#include <string.h>
+#include <dirent.h>
+#include <time.h>
+#include <limits.h>
+#include "scan.h"
+#include "list.h"
+#include "utils.h"
 
 void scan_and_write_dirs(const char *path, FILE*out)
 {
@@ -16,7 +17,7 @@ void scan_and_write_dirs(const char *path, FILE*out)
     {
          if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0)continue;
 
-        char full_path[4096];
+        char full_path[4090];
 
         if(path[strlen(path) - 1 ] == '/')
         {
@@ -37,22 +38,8 @@ void scan_and_write_dirs(const char *path, FILE*out)
     
 }
 
-void Update_visit(const char* target_path, time_t new_time, const char* visit_path)
+static void UpdateVisitFile(FILE* in, FILE* out,const char* target_path, time_t new_time)
 {
-    char tmp_path[512];
-    snprintf(tmp_path, sizeof(tmp_path), "%s_tmp", visit_path);
-
-    FILE* in = fopen(visit_path, "r");
-    FILE* out = fopen(tmp_path, "w");
-
-    if (!in || !out) 
-    {
-        perror("File open");
-        if (in) fclose(in);
-        if (out) fclose(out);
-        return;
-    }
-
     char path[256];
     int count;
     long timeshift;
@@ -67,22 +54,36 @@ void Update_visit(const char* target_path, time_t new_time, const char* visit_pa
             {
                 fprintf(out, "%s %d %ld\n", path, count + 1, new_time);
                 was_found = 1;
-            } 
-            else 
+            }
+            else
             {
                 fputs(line, out);
             }
         } 
-        else 
-        {
-            fputs(line, out);
-        }
     }
 
     if (!was_found) 
     {
         fprintf(out, "%s %d %ld\n", target_path, 1, new_time);
     }
+
+}
+
+void Update_visit(const char* target_path, time_t new_time, const char* visit_path)
+{
+    char tmp_path[512];
+    snprintf(tmp_path, sizeof(tmp_path), "%s_tmp", visit_path);
+
+    FILE* in = fopen(visit_path, "r");
+    FILE* out = fopen(tmp_path, "w");
+        if (!in || !out) 
+    {
+        perror("File open");
+        if (in) fclose(in);
+        if (out) fclose(out);
+        return;
+    }
+    UpdateVisitFile(in, out, target_path, new_time);
 
     fclose(in);
     fclose(out);
@@ -115,12 +116,12 @@ int Path_exist(const char* filename, const char* path)
     return 0;
 }
 
-void Add_visit(ArrayList* list, const char* visit)
+void AddNewVisitsToFile(ArrayList* list, const char* visit)
 {
     FILE* f = fopen(visit, "a");
     for (size_t i = 0; i < list->length; i++)
     {
-        const char* path = list->entryNode[i].path;
+        const char* path = list->entries[i].path;
         if(!Path_exist(visit, path))
         {
             fprintf(f,"%s 0 0\n", path);
@@ -130,7 +131,7 @@ void Add_visit(ArrayList* list, const char* visit)
     
 }
 
-ArrayList* Scan_config(const char config[])
+ArrayList* Scan_config(const char* config)
 {
     FILE* config_f = fopen(config,"r");
     ArrayList* result = Arraylist_init(10);
@@ -142,7 +143,12 @@ ArrayList* Scan_config(const char config[])
         buffer[strcspn(buffer,"\n")] = '\0';
         if(buffer[0] != '[')
         {
-            EntryNode.path = buffer;
+            EntryNode.path = strdup(buffer);
+            if(!EntryNode.path)
+            {
+                perror("strdup filed");
+                continue;
+            }
             EntryNode.last_acces = 0;
             EntryNode.rank = 0;
             Arraylist_push(result, EntryNode);
@@ -152,12 +158,12 @@ ArrayList* Scan_config(const char config[])
     return result;
 }
 
-int Config_result(ArrayList* config_str ,const char tmp[])
+int Config_result(ArrayList* config_str ,const char* tmp)
 {
     for (size_t i = 0; i < config_str->length; i++)
     {
         
-        if(strcmp(tmp, config_str->entryNode[i].path) == 0)
+        if(strcmp(tmp, config_str->entries[i].path) == 0)
         {
             return 1;
         }
