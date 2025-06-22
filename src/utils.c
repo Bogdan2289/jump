@@ -47,12 +47,11 @@ void Print_Line()
 }
 void Print_out(ArrayList* list, const char* visit_path)
 {
-
     ArrayList_Print(list);
     int index;
     if(scanf("%d",&index) != 1 || index < 0 || (size_t)index >= list->length) return;
-    Entry dir =  ArrayList_GetIndex(list, index);
-    printf("%s\n", dir.path);
-    Update_visit(dir.path, time(NULL),visit_path);
+    Entry* dir =  ArrayList_GetIndex(list, index);
+    printf("%s\n", dir->path);
+    Update_visit(dir->path, time(NULL),visit_path);
     AddNewVisitsToFile(list, visit_path);
 }

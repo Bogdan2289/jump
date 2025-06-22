@@ -80,8 +80,8 @@ int ParseConfigAndPrintMatches(const char* config_visit, const char* visit_path,
     }
     if(list->length == 1)
     {
-        Entry result = ArrayList_GetIndex(list, 0);
-        printf("%s\n",result.path);
+        Entry* result = ArrayList_GetIndex(list, 0);
+        printf("%s\n",result->path);
     }
     else
     {

@@ -99,9 +99,10 @@ int Path_exist(const char* filename, const char* path)
     FILE* f = fopen(filename, "r");
     if (!f) return 0;
 
-    char line[512], existing[256];
+    char line[512] ;
     while (fgets(line, sizeof(line), f)) 
     {
+        char existing[256];
         if (sscanf(line, "%255s", existing) == 1) 
         {
             if (strcmp(existing, path) == 0) 
@@ -119,6 +120,7 @@ int Path_exist(const char* filename, const char* path)
 void AddNewVisitsToFile(ArrayList* list, const char* visit)
 {
     FILE* f = fopen(visit, "a");
+    if(!f) return;
     for (size_t i = 0; i < list->length; i++)
     {
         const char* path = list->entries[i].path;
@@ -127,7 +129,7 @@ void AddNewVisitsToFile(ArrayList* list, const char* visit)
             fprintf(f,"%s 0 0\n", path);
         }
     }
-
+    fclose(f);
     
 }
 

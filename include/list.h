@@ -13,6 +13,6 @@ ArrayList* ArrayList_Init(size_t initial_capacity);
 void ArrayList_Push(ArrayList* list, Entry entry);
 void ArrayList_Free(ArrayList* list);
 void ArrayList_Print(ArrayList* list);
-Entry  ArrayList_GetIndex(ArrayList* list, int index);
+Entry*  ArrayList_GetIndex(ArrayList* list, int index);
 
 #endif

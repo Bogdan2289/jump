@@ -61,14 +61,27 @@ void ArrayList_Free(ArrayList* list)
 
 void ArrayList_Print(ArrayList* list)
 {
+    if (!list || !list->entries)
+    {
+        fprintf(stderr, "%sArrayList is NULL%s\n", RED, RESET);
+        return;
+    }
+    
     Print_Line();
     for (size_t i = 0; i < list->length; i++)
     {
         Entry* entry = &list->entries[i];
         char time_buf[32];
         struct tm* tm_info = localtime(&entry->last_acces);
-        strftime(time_buf, sizeof(time_buf), "%Y-%m-%d %H:%M", tm_info);
-        if(strcmp(time_buf, "1970-01-01 03:00") == 0)
+        if (!tm_info) 
+        {
+            strcpy(time_buf, "invalid");
+        }
+        else
+        {
+            strftime(time_buf, sizeof(time_buf), "%Y-%m-%d %H:%M", tm_info);
+        }
+        if(entry->last_acces == 0)
         {
             fprintf(stderr,"[%s%zu%s] %s%-100s%s %-10d %s%s\n\n", YELLOW, i, RESET, YELLOW, entry->path ? entry->path:"NULL" ,RED, entry->rank, "never", RESET);
         }
@@ -80,14 +93,14 @@ void ArrayList_Print(ArrayList* list)
     Print_Line();
           
 }
-Entry ArrayList_GetIndex(ArrayList* list, int index)
+
+Entry* ArrayList_GetIndex(ArrayList* list, int index)
 {
-    Entry dummy = {NULL, 0, 0};
      if (!list || !list->entries || index < 0 || index >= (int)list->length)
      {
          fprintf(stderr, "ArrayList_GetIndex: invalid index %d\n", index);
-         return dummy;
+         return NULL;
      }
 
-    return list->entries[index];
+    return &list->entries[index];
 }
