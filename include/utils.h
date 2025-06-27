@@ -15,6 +15,7 @@
 int Entry_Compare(const void* a, const void* b);
 int Get_terminal_width();
 void Print_Line();
+void Ncurses_Print_Line(int y);
 void Print_out(ArrayList* list, const char* visit_path);
 
 #endif

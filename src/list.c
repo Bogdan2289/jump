@@ -67,7 +67,7 @@ void ArrayList_Print(ArrayList* list)
         return;
     }
     
-    Print_Line();
+    // Print_Line();
     for (size_t i = 0; i < list->length; i++)
     {
         Entry* entry = &list->entries[i];
@@ -90,7 +90,7 @@ void ArrayList_Print(ArrayList* list)
             fprintf(stderr,"[%s%zu%s] %s%-100s%s %-10d %s%s\n\n", YELLOW, i, RESET, BLUE, entry->path ? entry->path:"NULL" ,RED, entry->rank, time_buf, RESET);
         }
     }
-    Print_Line();
+    // Print_Line();
           
 }
 

@@ -1,9 +1,11 @@
 #include <sys/ioctl.h>
 #include <stdio.h>
 #include <unistd.h>
+#include <ncurses.h>
 #include "parser.h"
 #include "utils.h"
 #include "scan.h"
+#include "ncurses_menu.h"
 
 
 int Entry_Compare(const void* a, const void* b)
@@ -32,26 +34,22 @@ int Get_terminal_width()
     return w.ws_col;
 }
 
-void Print_Line()
-{
-    fprintf(stderr,"%s\n", GREEN);
-    int width = Get_terminal_width();
-    fputc('<', stderr);
-    for (size_t i = 0; i < width - 2; i++)
-    {
-        fputc('-', stderr);
+void Ncurses_Print_Line(int y) {
+    int width, c;
+    getmaxyx(stdscr,c , width);
+    attron(COLOR_PAIR(1));
+    mvaddch(y, 0, '<');
+    for (int i = 1; i < width - 1; i++) {
+        addch('-');
     }
-       fputc('>', stderr);
-       fputc('\n', stderr);
-       fprintf(stderr,"%s", RESET);
+    addch('>');
+    attroff(COLOR_PAIR(1));
 }
+
 void Print_out(ArrayList* list, const char* visit_path)
 {
-    ArrayList_Print(list);
-    int index;
-    if(scanf("%d",&index) != 1 || index < 0 || (size_t)index >= list->length) return;
-    Entry* dir =  ArrayList_GetIndex(list, index);
-    printf("%s\n", dir->path);
+    Entry* dir = InteractiveMenu(list->entries, list->length);
+    printf("%s\n",dir->path);
     Update_visit(dir->path, time(NULL),visit_path);
     AddNewVisitsToFile(list, visit_path);
 }
